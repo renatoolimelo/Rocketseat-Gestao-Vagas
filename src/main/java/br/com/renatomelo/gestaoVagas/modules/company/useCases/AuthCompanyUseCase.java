@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
-import br.com.renatomelo.gestaoVagas.modules.company.dto.AuthCompanyDTO;
+import br.com.renatomelo.gestaoVagas.modules.company.dto.AuthCompanyRequestDTO;
 import br.com.renatomelo.gestaoVagas.modules.company.entities.CompanyEntity;
 import br.com.renatomelo.gestaoVagas.modules.company.repositories.CompanyRepository;
 
 @Service
 public class AuthCompanyUseCase {
 
-	@Value("${security.token.secret}")
+	@Value("${security.token.secret")
 	private String secretKey;
 
 	@Autowired
@@ -30,7 +30,7 @@ public class AuthCompanyUseCase {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	public String execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
+	public String execute(AuthCompanyRequestDTO authCompanyDTO) throws AuthenticationException {
 		CompanyEntity companyEntity = this.companyRepository.findByUsername(authCompanyDTO.getUsername())
 				.orElseThrow(() -> {
 					throw new UsernameNotFoundException("Username/password incorrect");
@@ -44,11 +44,12 @@ public class AuthCompanyUseCase {
 		}
 
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
-		String token = JWT.create().withIssuer("javagas")
-				.withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+		String token = JWT.create().withIssuer("javagas").withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
 				.withSubject(companyEntity.getId().toString())
 				.sign(algorithm);
+		
 		return token;
+
 	}
 
 }

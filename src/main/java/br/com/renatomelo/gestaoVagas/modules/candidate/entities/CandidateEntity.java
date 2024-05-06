@@ -1,4 +1,4 @@
-package br.com.renatomelo.gestaoVagas.modules.candidate;
+package br.com.renatomelo.gestaoVagas.modules.candidate.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
