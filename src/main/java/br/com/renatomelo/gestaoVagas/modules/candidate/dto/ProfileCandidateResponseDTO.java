@@ -1,5 +1,7 @@
 package br.com.renatomelo.gestaoVagas.modules.candidate.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthCandidateResponseDTO {
+public class ProfileCandidateResponseDTO {
 	
-	private String access_token;
-	private long expires_in;
+	private String description;
+	private String usernme;
+	private String email;
+	private UUID id;
+	private String name;
 
 }

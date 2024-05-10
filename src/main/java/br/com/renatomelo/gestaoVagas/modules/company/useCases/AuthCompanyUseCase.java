@@ -21,7 +21,7 @@ import br.com.renatomelo.gestaoVagas.modules.company.repositories.CompanyReposit
 @Service
 public class AuthCompanyUseCase {
 
-	@Value("${security.token.secret")
+	@Value("${security.token.secret}")
 	private String secretKey;
 
 	@Autowired
