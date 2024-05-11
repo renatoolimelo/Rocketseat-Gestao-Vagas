@@ -11,23 +11,26 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 public class SecurityConfig {
-	
+
 	@Autowired
 	private SecurityFilter securityFilter;
 
+	@Autowired
+	private SecutiryCandidateFilter secutiryCandidateFilter;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		
+
 		httpSecurity.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> {
 			auth.requestMatchers("/candidate/").permitAll()
-				.requestMatchers("/company/").permitAll()
-				.requestMatchers("/company/auth").permitAll()
-				.requestMatchers("/candidate/auth").permitAll();
+			.requestMatchers("/company/").permitAll()
+			.requestMatchers("/company/auth").permitAll()
+			.requestMatchers("/candidate/auth").permitAll();
 			auth.anyRequest().authenticated();
 		})
-		.addFilterBefore(securityFilter, BasicAuthenticationFilter.class)
-		;
-		
+		.addFilterBefore(secutiryCandidateFilter, BasicAuthenticationFilter.class)
+		.addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
+
 		return httpSecurity.build();
 	}
 
