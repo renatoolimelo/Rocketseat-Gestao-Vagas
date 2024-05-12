@@ -2,6 +2,7 @@ package br.com.renatomelo.gestaoVagas.modules.company.useCases;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
 import javax.security.sasl.AuthenticationException;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import br.com.renatomelo.gestaoVagas.modules.candidate.dto.AuthCandidateResponseDTO;
 import br.com.renatomelo.gestaoVagas.modules.company.dto.AuthCompanyRequestDTO;
 import br.com.renatomelo.gestaoVagas.modules.company.entities.CompanyEntity;
 import br.com.renatomelo.gestaoVagas.modules.company.repositories.CompanyRepository;
@@ -30,7 +32,7 @@ public class AuthCompanyUseCase {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	public String execute(AuthCompanyRequestDTO authCompanyDTO) throws AuthenticationException {
+	public AuthCandidateResponseDTO execute(AuthCompanyRequestDTO authCompanyDTO) throws AuthenticationException {
 		CompanyEntity companyEntity = this.companyRepository.findByUsername(authCompanyDTO.getUsername())
 				.orElseThrow(() -> {
 					throw new UsernameNotFoundException("Username/password incorrect");
@@ -42,13 +44,22 @@ public class AuthCompanyUseCase {
 		if (!passwordMatches) {
 			throw new AuthenticationException();
 		}
+		
+		Instant expiresIn = Instant.now().plus(Duration.ofHours(2));
 
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
-		String token = JWT.create().withIssuer("javagas").withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+		String token = JWT.create().withIssuer("javagas")
 				.withSubject(companyEntity.getId().toString())
+				.withExpiresAt(expiresIn)
+				.withClaim("roles", Arrays.asList("COMPANY"))
 				.sign(algorithm);
 		
-		return token;
+		AuthCandidateResponseDTO authCandidateResponseDTO = AuthCandidateResponseDTO.builder()
+				.access_token(token)
+				.expires_in(expiresIn.toEpochMilli())
+				.build();
+		
+		return authCandidateResponseDTO;
 
 	}
 
